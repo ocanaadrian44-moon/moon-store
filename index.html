@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moon Store · Pago contra entrega</title>
+<link rel="icon" href="images/favicon.png">
+<style>
+:root{--bg:#0b1a2e;--panel:#12263f;--line:#26405e;--ink:#eef3f9;--muted:#a6b6c9;--silver:#d5deea;--cta:#25d366;--cta-ink:#04210f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+header{text-align:center;padding:22px 0 6px}
+header img{width:150px;height:auto;border-radius:18px}
+.perks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;list-style:none;padding:0;margin:14px 0 0;font-family:system-ui,sans-serif;font-size:.9rem}
+.perks li{border:1px solid var(--line);padding:6px 14px;border-radius:999px;color:var(--silver)}
+.product{display:grid;grid-template-columns:1fr;gap:22px;padding:30px 18px 36px}
+@media(min-width:800px){.product{grid-template-columns:1.1fr 1fr;align-items:start}}
+.gallery .main{aspect-ratio:1/1;background:var(--panel);border-radius:14px;overflow:hidden}
+.gallery .main img,.gallery .main video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.thumbs button{position:relative}
+.thumbs .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);color:#fff;font-size:1.3rem}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.thumbs button{padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer;aspect-ratio:1/1}
+.thumbs button[aria-current="true"]{border-color:var(--silver)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs button:focus-visible,.buy:focus-visible{outline:3px solid #fff;outline-offset:2px}
+h1{font-size:1.7rem;line-height:1.15;margin:0 0 6px;font-weight:600}
+.price{font-family:system-ui,sans-serif;font-size:2.1rem;font-weight:700;margin:8px 0 2px}
+.note{font-family:system-ui,sans-serif;color:var(--muted);font-size:.95rem;margin:0 0 16px}
+.desc{color:var(--silver);margin:0 0 14px}
+ul.feat{padding-left:20px;margin:0 0 20px;color:var(--silver)}
+ul.feat li{margin:4px 0}
+.buy{display:block;text-align:center;text-decoration:none;background:var(--cta);color:var(--cta-ink);font-family:system-ui,sans-serif;font-weight:700;font-size:1.1rem;padding:15px;border-radius:12px}
+.buy:hover{filter:brightness(1.07)}
+.how{font-family:system-ui,sans-serif;font-size:.9rem;color:var(--muted);margin-top:12px}
+.sticky{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(11,26,46,.96);border-top:1px solid var(--line)}
+@media(min-width:800px){.sticky{display:none}}
+
+.product+.product{border-top:1px solid var(--line)}
+.nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 0;font-family:system-ui,sans-serif}
+.nav a{color:var(--ink);text-decoration:none;background:var(--panel);border:1px solid var(--line);padding:8px 16px;border-radius:999px;font-size:.95rem}
+.nav a:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.product{scroll-margin-top:10px}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <img src="images/logo.jpg" alt="Moon Store">
+  <ul class="perks"><li>Pago contra entrega</li><li>Delivery gratis</li><li>Atención por WhatsApp</li></ul>
+  <nav class="nav" id="nav" aria-label="Productos"></nav>
+</header>
+
+<div id="products"></div>
+<footer class="wrap how" style="padding-bottom:40px;text-align:center">Al pulsar "Comprar por WhatsApp" se abre tu chat con el pedido listo. Confirmamos tu dirección y la hora de entrega por ahí. Pago contra entrega.</footer>
+
+<script>
+/* ===== EDITA AQUÍ ===== */
+const WHATSAPP = "51903175224";
+const PRODUCTS = [
+ { id:"picador", name:"Picador multifuncional de verduras 14 en 1", short:"Picador", price:55,
+   desc:"¿Cansado de perder tiempo picando verduras y terminar con las manos oliendo a cebolla? Con este picador preparas tus comidas en segundos.",
+   feat:["Cuchillas de acero para cortar en cubos, rallar, laminar y pelar","Todo cae directo en su contenedor transparente","Rápido, seguro y sin ensuciar la mesa","Incluye pelador y sujetador de seguridad"],
+   media:[{t:"v",src:"videos/picador-1.mp4",poster:"images/poster1.jpg"},{t:"v",src:"videos/picador-2.mp4",poster:"images/poster2.jpg"},
+     {t:"i",src:"images/cerrado.jpg"},{t:"i",src:"images/abierto.jpg"},{t:"i",src:"images/piezas.jpg"},{t:"i",src:"images/set.jpg"},{t:"i",src:"images/cuchillas.jpg"},{t:"i",src:"images/caja.jpg"}] },
+ { id:"bolsa", name:"Bolsas organizadoras al vacío", short:"Bolsas al vacío", price:57,
+   desc:"¿Tu clóset ya no da más y no sabes dónde guardar tanta ropa? Con estas bolsas ahorras hasta un 80% de espacio en segundos.",
+   feat:["Ideales para edredones, casacas y ropa de invierno","Protegen del polvo y la humedad","Ahorran espacio en tu clóset al instante"],
+   media:[{t:"v",src:"videos/bolsa-1.mp4",poster:"images/bolsa-poster1.jpg"},{t:"v",src:"videos/bolsa-2.mp4",poster:"images/bolsa-poster2.jpg"}] },
+ { id:"separador", name:"Separador Cook Magic", short:"Separador", price:45,
+   desc:"¿Cansado de cortarte los dedos o de que las rodajas de cebolla te salgan chuecas? Con el Separador Cook Magic logras cortes perfectos y uniformes en segundos.",
+   feat:["Clava el sujetador en cebollas, tomates o carnes","Pasa el cuchillo entre las varillas y listo","Cortes uniformes, sin malos olores en las manos ni accidentes"],
+   media:[{t:"v",src:"videos/separador-1.mp4",poster:"images/separador-poster1.jpg"}] }
+];
+/* ======================= */
+const root = document.getElementById("products"), nav = document.getElementById("nav");
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if(cls) e.className = cls; if(txt) e.textContent = txt; return e; };
+PRODUCTS.forEach(p => {
+  const chip = el("a", "", p.short); chip.href = "#" + p.id; nav.appendChild(chip);
+  const sec = el("section", "product wrap"); sec.id = p.id;
+  const gal = el("div", "gallery"); const main = el("div", "main"); const thumbs = el("div", "thumbs");
+  gal.append(main, thumbs);
+  const show = m => {
+    main.innerHTML = ""; let x;
+    if(m.t === "v"){ x = el("video"); x.src = m.src; x.poster = m.poster; x.controls = true; x.playsInline = true; x.preload = "metadata"; }
+    else { x = el("img"); x.src = m.src; x.alt = p.name; }
+    main.appendChild(x);
+  };
+  p.media.forEach((m, i) => {
+    const b = el("button"); b.type = "button"; b.setAttribute("aria-label", (m.t === "v" ? "Ver video " : "Ver foto ") + (i + 1));
+    if(i === 0) b.setAttribute("aria-current", "true");
+    const im = el("img"); im.src = m.poster || m.src; im.alt = ""; b.appendChild(im);
+    if(m.t === "v") b.appendChild(el("span", "play", "▶"));
+    b.onclick = () => { show(m); thumbs.querySelectorAll("button").forEach(y => y.removeAttribute("aria-current")); b.setAttribute("aria-current", "true"); };
+    thumbs.appendChild(b);
+  });
+  show(p.media[0]);
+  const info = el("div");
+  const msg = `Hola Moon Store, quiero comprar: ${p.name} (S/ ${p.price}). Pago contra entrega. Mi nombre y dirección son: `;
+  const buy = el("a", "buy", "Comprar por WhatsApp");
+  buy.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(msg); buy.target = "_blank"; buy.rel = "noopener";
+  const ul = el("ul", "feat"); p.feat.forEach(f => ul.appendChild(el("li", "", f)));
+  info.append(el("h1", "", p.name), el("div", "price", "S/ " + p.price), el("p", "note", "Pagas al recibir. Envío gratis a todo Lima."), el("p", "desc", p.desc), ul, buy);
+  sec.append(gal, info); root.appendChild(sec);
+});
+</script>
+</body>
+</html>
